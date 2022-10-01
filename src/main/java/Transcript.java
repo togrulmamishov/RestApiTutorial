@@ -4,6 +4,15 @@ public class Transcript {
     private String id;
     private String status;
     private String text;
+    private Boolean language_detection;
+
+    public Boolean getLanguage_detection() {
+        return language_detection;
+    }
+
+    public void setLanguage_detection(Boolean language_detection) {
+        this.language_detection = language_detection;
+    }
 
     public String getStatus() {
         return status;

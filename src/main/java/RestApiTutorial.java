@@ -8,6 +8,7 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Arrays;
 import java.util.Properties;
 
 import static java.net.http.HttpRequest.*;
@@ -15,17 +16,14 @@ import static java.net.http.HttpRequest.*;
 
 public class RestApiTutorial {
 
-    private static final Properties properties = new Properties();
-
-
     public static void main(String[] args) throws URISyntaxException, IOException, InterruptedException {
 
         Transcript transcript = new Transcript();
         transcript.setAudio_url(value("audio-url"));
+        transcript.setLanguage_detection(Boolean.valueOf(value("language-detection")));
         Gson gson = new Gson();
 
         String jsonRequest = gson.toJson(transcript);
-        System.out.println(jsonRequest);
 
         HttpRequest post = newBuilder()
                 .uri(new URI("https://api.assemblyai.com/v2/transcript"))
@@ -38,7 +36,6 @@ public class RestApiTutorial {
 
         transcript = gson.fromJson(postResponse.body(), Transcript.class);
 
-        System.out.println(transcript.getId());
 
         HttpRequest getRequest = HttpRequest.newBuilder()
                 .uri(new URI("https://api.assemblyai.com/v2/transcript/" + transcript.getId()))
@@ -52,13 +49,13 @@ public class RestApiTutorial {
             transcript = gson.fromJson(getResponse.body(), Transcript.class);
             String status = transcript.getStatus();
 
-            if(status.equals("completed") || status.equals("error")) {
+            if("completed".equals(status) || "error".equals(status)) {
                 break;
             }
 
         }
 
-        System.out.println("Transcription completed");
+        System.out.println("Transcription completed. Result: \n");
         System.out.println(transcript.getText());
     }
 
