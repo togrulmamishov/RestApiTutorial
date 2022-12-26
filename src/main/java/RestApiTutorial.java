@@ -42,17 +42,13 @@ public class RestApiTutorial {
                 .header("Authorization", value("authorization.api-key"))
                 .build();
 
-        while (true) {
+        String status = null;
+        while (!("completed".equals(status) || "error".equals(status))) {
 
             var getResponse = httpClient.send(getRequest, HttpResponse.BodyHandlers.ofString());
 
             transcript = gson.fromJson(getResponse.body(), Transcript.class);
-            String status = transcript.getStatus();
-
-            if("completed".equals(status) || "error".equals(status)) {
-                break;
-            }
-
+            status = transcript.getStatus();
         }
 
         System.out.println("Transcription completed. Result: \n");
